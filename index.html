@@ -17,8 +17,51 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
+    <!-- Onboarding Overlay -->
+    <div id="onboarding-overlay" class="onboarding-overlay hidden">
+        <div class="onboarding-content glass">
+            <!-- Step 1: Name -->
+            <div id="step-1" class="onboarding-step active">
+                <div class="step-icon"><i class="fa-solid fa-face-smile-beam"></i></div>
+                <h1>¡Bienvenido!</h1>
+                <p>Para empezar, ¿cómo quieres que te llame?</p>
+                <div class="form-group">
+                    <input type="text" id="user-name-input" placeholder="Tu nombre aquí..." autocomplete="off">
+                </div>
+                <button class="submit-btn" onclick="goToStep(2)">Continuar <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
 
+            <!-- Step 2: Bank Selection -->
+            <div id="step-2" class="onboarding-step">
+                <div class="step-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <h1>Tus Bancos</h1>
+                <p>Selecciona los bancos que utilizas en Venezuela:</p>
+                <div id="banks-selection-list" class="banks-grid-selection">
+                    <!-- Banks will be injected here -->
+                </div>
+                <button class="submit-btn" onclick="goToStep(3)">Siguiente <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <!-- Step 3: Initial Balances -->
+            <div id="step-3" class="onboarding-step">
+                <div class="step-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                <h1>Saldos Iniciales</h1>
+                <p>¿Cuánto dinero tienes actualmente?</p>
+                <div id="initial-balances-list" class="balances-input-list">
+                    <!-- Balance inputs will be injected here -->
+                </div>
+                <button class="submit-btn" onclick="finishOnboarding()">¡Empezar a ahorrar! <i class="fa-solid fa-check"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-content">
+        <header class="minimal-header">
+            <div class="user-greeting">
+                <p id="greeting-text">Hola,</p>
+                <h2 id="display-name">Usuario</h2>
+            </div>
+        </header>
 
         <main>
             <!-- Balances -->
@@ -51,21 +94,9 @@
                     </div>
                 </div>
 
-                <div class="accounts-grid">
-                    <div class="card account-card banesco">
-                        <div class="account-header">
-                            <h2>Banesco</h2>
-                            <i class="fa-solid fa-building-columns"></i>
-                        </div>
-                        <h3 id="balance-banesco">Bs. 0.00</h3>
-                    </div>
-                    <div class="card account-card mercantil">
-                        <div class="account-header">
-                            <h2>Mercantil</h2>
-                            <i class="fa-solid fa-building-columns"></i>
-                        </div>
-                        <h3 id="balance-mercantil">Bs. 0.00</h3>
-                    </div>
+                <!-- Dynamic Accounts Grid -->
+                <div id="accounts-grid" class="accounts-grid">
+                    <!-- Bank cards will be injected here -->
                 </div>
             </section>
 
@@ -94,7 +125,7 @@
                     </div>
                 </div>
 
-                <!-- Calendar View (Hidden by default) -->
+                <!-- Calendar View -->
                 <div id="calendar-container" class="calendar-container hidden">
                     <div class="calendar-header">
                         <button id="cal-prev" class="icon-btn small"><i class="fa-solid fa-chevron-left"></i></button>
@@ -104,19 +135,14 @@
                     <div class="calendar-grid-header">
                         <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span>
                     </div>
-                    <div id="calendar-grid" class="calendar-grid">
-                        <!-- Days injected via JS -->
-                    </div>
+                    <div id="calendar-grid" class="calendar-grid"></div>
                     <div class="calendar-filter-info hidden" id="calendar-filter-info">
                         <span id="calendar-filter-date">Filtrando...</span>
                         <button id="btn-clear-date-filter"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
 
-                <!-- List View -->
-                <ul id="transaction-list" class="transaction-list">
-                    <!-- Transactions will be injected here via JS -->
-                </ul>
+                <ul id="transaction-list" class="transaction-list"></ul>
             </section>
         </main>
 
@@ -129,13 +155,12 @@
                 </div>
                 <form id="transaction-form">
                     <input type="hidden" id="type">
-                    <input type="hidden" id="edit-id"> <!-- For editing -->
+                    <input type="hidden" id="edit-id">
                     
                     <div class="form-group">
                         <label for="account">Cuenta</label>
                         <select id="account" required>
-                            <option value="banesco">Banesco</option>
-                            <option value="mercantil">Mercantil</option>
+                            <!-- Options injected based on user banks -->
                         </select>
                     </div>
 
@@ -150,9 +175,7 @@
                     <div class="form-group">
                         <label for="reason">Motivo</label>
                         <input type="text" id="reason" list="motivos-list" placeholder="Ej. Quincena, Comida..." required autocomplete="off">
-                        <datalist id="motivos-list">
-                            <!-- Motivos guardados inyectados por JS -->
-                        </datalist>
+                        <datalist id="motivos-list"></datalist>
                     </div>
 
                     <div class="form-group">
@@ -175,7 +198,6 @@
                     </div>
 
                     <div class="modal-actions" id="modal-actions">
-                        <!-- Buttons injected via JS depending on mode -->
                         <button type="submit" class="submit-btn" id="btn-save-tx">Guardar Registro</button>
                     </div>
                 </form>
