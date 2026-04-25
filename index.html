@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mis Finanzas</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#845ec2">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+
+
+        <main>
+            <!-- Balances -->
+            <section class="balances">
+                <div class="card balance-card">
+                    <h2>Balance Total</h2>
+                    <h3 id="total-balance">Bs. 0.00</h3>
+                    
+                    <div class="bcv-rates-container">
+                        <div class="bcv-rate" id="bcv-usd-box">
+                            <small>Total en USD</small>
+                            <span>$<span id="usd-converted">0.00</span></span>
+                            <small class="rate-tooltip">Tasa BCV: <span id="bcv-usd-rate">Cargando...</span></small>
+                        </div>
+                        <div class="bcv-rate" id="bcv-eur-box">
+                            <small>Total en EUR</small>
+                            <span>€<span id="eur-converted">0.00</span></span>
+                            <small class="rate-tooltip">Tasa BCV: <span id="bcv-eur-rate">Cargando...</span></small>
+                        </div>
+                    </div>
+
+                    <div class="balance-details">
+                        <div class="detail physical-dollars">
+                            <i class="fa-solid fa-wallet"></i>
+                            <div>
+                                <p>Dólares Físicos</p>
+                                <span id="total-physical-dollars">$ 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accounts-grid">
+                    <div class="card account-card banesco">
+                        <div class="account-header">
+                            <h2>Banesco</h2>
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <h3 id="balance-banesco">Bs. 0.00</h3>
+                    </div>
+                    <div class="card account-card mercantil">
+                        <div class="account-header">
+                            <h2>Mercantil</h2>
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <h3 id="balance-mercantil">Bs. 0.00</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <section class="actions">
+                <button class="action-btn btn-income" onclick="openModal('ingreso')">
+                    <div class="icon-wrapper"><i class="fa-solid fa-plus"></i></div>
+                    <span>Ingreso</span>
+                </button>
+                <button class="action-btn btn-expense" onclick="openModal('egreso')">
+                    <div class="icon-wrapper"><i class="fa-solid fa-minus"></i></div>
+                    <span>Egreso</span>
+                </button>
+            </section>
+
+            <!-- History & Calendar -->
+            <section class="history">
+                <div class="history-header">
+                    <h2>Movimientos</h2>
+                    <div class="history-controls">
+                        <div class="search-wrapper">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-input" placeholder="Buscar...">
+                        </div>
+                        <button id="btn-toggle-view" class="icon-btn small"><i class="fa-solid fa-calendar"></i></button>
+                    </div>
+                </div>
+
+                <!-- Calendar View (Hidden by default) -->
+                <div id="calendar-container" class="calendar-container hidden">
+                    <div class="calendar-header">
+                        <button id="cal-prev" class="icon-btn small"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h3 id="cal-month-year">Mes Año</h3>
+                        <button id="cal-next" class="icon-btn small"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-grid-header">
+                        <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span>
+                    </div>
+                    <div id="calendar-grid" class="calendar-grid">
+                        <!-- Days injected via JS -->
+                    </div>
+                    <div class="calendar-filter-info hidden" id="calendar-filter-info">
+                        <span id="calendar-filter-date">Filtrando...</span>
+                        <button id="btn-clear-date-filter"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <ul id="transaction-list" class="transaction-list">
+                    <!-- Transactions will be injected here via JS -->
+                </ul>
+            </section>
+        </main>
+
+        <!-- Modal -->
+        <div id="transaction-modal" class="modal">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h2 id="modal-title">Nueva Transacción</h2>
+                    <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="transaction-form">
+                    <input type="hidden" id="type">
+                    <input type="hidden" id="edit-id"> <!-- For editing -->
+                    
+                    <div class="form-group">
+                        <label for="account">Cuenta</label>
+                        <select id="account" required>
+                            <option value="banesco">Banesco</option>
+                            <option value="mercantil">Mercantil</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Monto (Bs.)</label>
+                        <div class="input-wrapper">
+                            <span class="currency">Bs.</span>
+                            <input type="number" id="amount" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Motivo</label>
+                        <input type="text" id="reason" list="motivos-list" placeholder="Ej. Quincena, Comida..." required autocomplete="off">
+                        <datalist id="motivos-list">
+                            <!-- Motivos guardados inyectados por JS -->
+                        </datalist>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Fecha</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="is-exchange">
+                            <span class="toggle-text">¿Es compra/venta de dólares?</span>
+                        </label>
+                    </div>
+
+                    <div id="exchange-fields" class="hidden">
+                        <div class="form-group">
+                            <label for="exchange-rate">Tasa de Cambio (Bs./$)</label>
+                            <input type="number" id="exchange-rate" step="0.01" min="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <div class="modal-actions" id="modal-actions">
+                        <!-- Buttons injected via JS depending on mode -->
+                        <button type="submit" class="submit-btn" id="btn-save-tx">Guardar Registro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

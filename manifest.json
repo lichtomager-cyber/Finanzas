@@ -1,0 +1,16 @@
+{
+  "name": "Mis Finanzas PWA",
+  "short_name": "Finanzas",
+  "description": "Una aplicación dinámica y moderna para llevar el control de tus finanzas personales.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#845ec2",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
